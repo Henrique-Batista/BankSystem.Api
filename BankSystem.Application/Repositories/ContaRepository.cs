@@ -22,4 +22,13 @@ public sealed class ContaRepository : Repository<Conta>, IContaRepository
             .FirstOrDefaultAsync(t => t.Id == id);
         return conta;
     }
+    
+    public new async Task<bool> UpdateAsync(Conta? entity)
+    {
+        if (entity == null) return await Task.FromResult(false);
+        _dbContext.Entry(entity).State = EntityState.Modified;
+        _dbContext.Entry(entity).Property(x => x.Numero).IsModified = false;
+        await _dbContext.SaveChangesAsync();
+        return await Task.FromResult(true);
+    }
 }

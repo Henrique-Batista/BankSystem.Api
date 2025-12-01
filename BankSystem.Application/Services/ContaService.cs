@@ -48,7 +48,7 @@ public sealed class ContaService : IContaService
     {
         var conta = await _contaRepository.GetByIdAsync(contaId);
         ArgumentNullException.ThrowIfNull(conta);
-        var client = conta.Cliente;
+        var client = await _clienteService.GetByIdAsync(conta.Cliente_Id);
         if (!(clienteDto.Nome == client?.Nome && clienteDto.Cpf == client.Cpf &&
               clienteDto.DataNascimento == client.DataNascimento.ToString()))
         {
@@ -67,7 +67,7 @@ public sealed class ContaService : IContaService
     {
         var conta = await _contaRepository.GetByIdAsync(contaId);
         ArgumentNullException.ThrowIfNull(conta);
-        var client = conta.Cliente;
+        var client = await _clienteService.GetByIdAsync(conta.Cliente_Id);
         if (!(clienteDto.Nome == client?.Nome && clienteDto.Cpf == client.Cpf &&
               clienteDto.DataNascimento == client.DataNascimento.ToString()))
         {
@@ -169,8 +169,7 @@ public sealed class ContaService : IContaService
                 throw new InvalidOperationException(
                     "Conta de destino deve ser do mesmo cliente da conta de origem em transacoes de contas do tipo Poupanca.");
         }
-
-        // testar se, ao a operacao de saque da conta origem ser feita porem dar excecao na operacao de deposito na conta destino ira salvar um estado incorreto na aplicacao
+        
         contaOrigem.Sacar(valor);
         contaDestino.Depositar(valor);
         await _contaRepository.UpdateAsync(contaOrigem);

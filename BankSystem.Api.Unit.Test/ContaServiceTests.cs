@@ -12,14 +12,14 @@ namespace BankSystem.Api.Unit.Test;
 
 public class ContaServiceTests
 {
-    private readonly Mock<IRepository<Conta>> _contaRepositoryMock;
+    private readonly Mock<IContaRepository> _contaRepositoryMock;
     private readonly Mock<IClienteService> _clienteServiceMock;
     private readonly Mock<ILogger<ContaService>> _logger = new();
     private readonly ContaService _contaService;
 
     public ContaServiceTests()
     {
-        _contaRepositoryMock = new Mock<IRepository<Conta>>();
+        _contaRepositoryMock = new Mock<IContaRepository>();
         _clienteServiceMock = new Mock<IClienteService>();
         _contaService = new ContaService(_contaRepositoryMock.Object, _clienteServiceMock.Object, _logger.Object);
     }
