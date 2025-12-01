@@ -3,6 +3,11 @@ using BankSystem.Domain.ValueObjects;
 
 namespace BankSystem.Domain.Models;
 
+/// <summary>
+/// Represents a transaction within the banking system.
+/// A transaction occurs between two accounts and includes details such as
+/// the type of transaction, amount involved, and associated accounts.
+/// </summary>
 public sealed class Transacao : Entity
 {
     private Transacao()

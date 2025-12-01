@@ -2,6 +2,9 @@ using BankSystem.Domain.Exceptions;
 
 namespace BankSystem.Domain.Models;
 
+/// <summary>
+/// Represents a client in the banking system.
+/// </summary>
 public sealed class Cliente : Entity
 {
     private string _cpf = String.Empty;

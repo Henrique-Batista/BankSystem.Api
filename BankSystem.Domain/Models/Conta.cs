@@ -5,6 +5,9 @@ using BankSystem.Domain.ValueObjects;
 
 namespace BankSystem.Domain.Models;
 
+/// <summary>
+/// Represents a bank account entity, encapsulating various attributes and behaviors related to accounts within the banking domain.
+/// </summary>
 public sealed class Conta : Entity
 {
     private Conta()

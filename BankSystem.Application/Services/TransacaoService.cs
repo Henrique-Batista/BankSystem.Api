@@ -1,6 +1,7 @@
 using BankSystem.Application.DTOs;
 using BankSystem.Application.Repositories;
 using BankSystem.Domain.Models;
+using BankSystem.Domain.ValueObjects;
 using Microsoft.Extensions.Logging;
 
 namespace BankSystem.Application.Services;
@@ -38,6 +39,11 @@ public sealed class TransacaoService : ITransacaoService
         if (contaOrigem == null || contaDestino == null) throw new InvalidOperationException("Conta de origem ou destino inexistente.");
         
         if (contaOrigem.Saldo < transacaoDto.Valor) throw new InvalidOperationException("Saldo insuficiente.");
+        
+        if (contaOrigem.Tipo == nameof(TipoDeConta.Digital) || contaDestino.Tipo == nameof(TipoDeConta.Digital))
+        {
+            if (transacaoDto.Tipo == TipoDeTransacao.Cheque) throw new InvalidOperationException("Tipo de transacao invalido para contas digitais.");
+        }
 
         await _contaService.Transfer(contaOrigem.Id, contaDestino.Id, transacaoDto.Valor);
         

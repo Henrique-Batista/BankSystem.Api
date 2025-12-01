@@ -76,6 +76,28 @@ public sealed class ContasController : ControllerBase
         return Results.CreatedAtRoute("GetAccountById", new { id = result.Value }, conta);
     }
 
+    [EndpointSummary("Activate account")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpPatch("contas/{id:guid}/ativar", Name = "ActivateAccount")]
+    public async Task<IResult> ActivateAccountAsync([FromRoute] Guid id, [FromBody] ClienteInputModel cliente)
+    {
+        var result = await _contaService.ActivateAccountAsync(id, cliente);
+        if (!result) return Results.BadRequest("Falha ao ativar a conta.");
+        
+        return Results.Ok("Conta ativada com sucesso.");
+    }
+
+    [EndpointSummary("Desactivate account")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpPatch("contas/{id:guid}/desativar", Name = "DesactivateAccount")]
+    public async Task<IResult> DesactivateAccountAsync([FromRoute] Guid id, [FromBody] ClienteInputModel clienteDto)
+    {
+        var result = await _contaService.DesactivateAccountAsync(id, clienteDto);
+        if (!result) return Results.BadRequest("Falha ao desativar a conta.");
+        
+        return Results.Ok("Conta desativada com sucesso.");
+    }
+
     [EndpointSummary("Delete account by Id")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpDelete("contas/{id:guid}", Name = "DeleteAccount")]
