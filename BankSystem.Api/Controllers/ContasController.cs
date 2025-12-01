@@ -75,6 +75,28 @@ public sealed class ContasController : ControllerBase
         
         return Results.CreatedAtRoute("GetAccountById", new { id = result.Value }, conta);
     }
+    
+    [EndpointSummary("Withdrawl money")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpPatch("contas/{id:guid}/sacar", Name = "WithdrawlMoney")]
+    public async Task<IResult> WithdrawlMoneyAsync([FromRoute] Guid id, [FromBody] decimal valor)
+    {
+        var result = await _contaService.WithdrawlAsync(id, valor);
+        if (!result) return Results.BadRequest("Falha ao sacar o valor.");
+        
+        return Results.Ok("Valor sacado com sucesso.");
+    }
+
+    [EndpointSummary("Deposit money")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [HttpPatch("contas/{id:guid}/depositar", Name = "DepositMoney")]
+    public async Task<IResult> DepositMoneyAsync([FromRoute] Guid id, [FromBody] decimal valor)
+    {
+        var result = await _contaService.DepositAsync(id, valor);
+        if (!result) return Results.BadRequest("Falha ao depositar o valor.");
+        
+        return Results.Ok("Valor depositado com sucesso.");
+    }
 
     [EndpointSummary("Activate account")]
     [ProducesResponseType(StatusCodes.Status200OK)]

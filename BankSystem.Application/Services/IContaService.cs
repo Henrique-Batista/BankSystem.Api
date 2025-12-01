@@ -15,7 +15,7 @@ public interface IContaService
     Task Transfer(Guid contaOrigemId, Guid contaDestinoId, decimal valor);
     Task<bool> ActivateAccountAsync(Guid contaId, ClienteInputModel clienteDto);
     Task<bool> DesactivateAccountAsync(Guid contaId, ClienteInputModel clienteDto);
+    ContaViewModel ContaToDto(Conta conta);
     Task<bool> DepositAsync(Guid contaId, decimal valor);
     Task<bool> WithdrawlAsync(Guid contaId, decimal valor);
-    ContaViewModel ContaToDto(Conta conta);
 }
