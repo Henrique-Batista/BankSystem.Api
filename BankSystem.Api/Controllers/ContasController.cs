@@ -15,6 +15,8 @@ public sealed class ContasController : ControllerBase
         _contaService = contaService;
     }
 
+    [EndpointSummary("Get all accounts")]
+    [ProducesResponseType(typeof(IEnumerable<ContaViewModel>), StatusCodes.Status200OK)]
     [HttpGet("contas", Name = "GetAllAccounts")]
     public async Task<IResult> GetAllAccountsAsync()
     {
@@ -22,6 +24,8 @@ public sealed class ContasController : ControllerBase
         return Results.Ok(contas);
     }
 
+    [EndpointSummary("Get account by Id")]
+    [ProducesResponseType(typeof(ContaViewModel), StatusCodes.Status200OK)]
     [HttpGet("contas/{id:guid}", Name = "GetAccountById")]
     public async Task<IResult> GetAccountByIdAsync([FromRoute] Guid id)
     {
@@ -30,6 +34,8 @@ public sealed class ContasController : ControllerBase
         return Results.Ok(conta);
     }
 
+    [EndpointSummary("Get account transactions")]
+    [ProducesResponseType(typeof(IEnumerable<TransacaoViewModel>), StatusCodes.Status200OK)]
     [HttpGet("contas/{id:guid}/transacoes", Name = "GetAccountTransactions")]
     public async Task<IResult> GetAccountTransactionsAsync([FromRoute] Guid id)
     {
@@ -37,6 +43,8 @@ public sealed class ContasController : ControllerBase
         return Results.Ok(transacoes);
     }
     
+    [EndpointSummary("Get account transactions as destination")]
+    [ProducesResponseType(typeof(IEnumerable<TransacaoViewModel>), StatusCodes.Status200OK)]
     [HttpGet("contas/{id:guid}/transacoes/destino", Name = "GetAccountTransactionsAsDestination")]
     public async Task<IResult> GetAccountTransactionsAsDestinationAsync([FromRoute] Guid id)
     {
@@ -44,6 +52,8 @@ public sealed class ContasController : ControllerBase
         return Results.Ok(transacoes);
     }
     
+    [EndpointSummary("Get account transactions as source")]
+    [ProducesResponseType(typeof(IEnumerable<TransacaoViewModel>), StatusCodes.Status200OK)]
     [HttpGet("contas/{id:guid}/transacoes/origem", Name = "GetAccountTransactionsAsSource")]
     public async Task<IResult> GetAccountTransactionsAsSourceAsync([FromRoute] Guid id)
     {
@@ -51,6 +61,8 @@ public sealed class ContasController : ControllerBase
         return Results.Ok(transacoes);
     }
 
+    [EndpointSummary("Create new account")]
+    [ProducesResponseType(typeof(ContaViewModel), StatusCodes.Status201Created)]
     [HttpPost("contas", Name = "CreateNewAccount")]
     public async Task<IResult> CreateNewAccountAsync([FromBody] ContaInputModel? contaDto)
     {
@@ -64,6 +76,8 @@ public sealed class ContasController : ControllerBase
         return Results.CreatedAtRoute("GetAccountById", new { id = result.Value }, conta);
     }
 
+    [EndpointSummary("Delete account by Id")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpDelete("contas/{id:guid}", Name = "DeleteAccount")]
     public async Task<IResult> DeleteAccountAsync([FromRoute] Guid id)
     {

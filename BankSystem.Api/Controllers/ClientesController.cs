@@ -15,6 +15,7 @@ public sealed class ClientesController : ControllerBase
         _clienteService = clienteService;
     }
 
+    [EndpointSummary("Get all clients")]
     [HttpGet("clientes", Name = "GetAllClients")]
     [ProducesResponseType(typeof(IEnumerable<ClienteViewModel>), StatusCodes.Status200OK)]
     public async Task<IResult> GetAllClientsAsync()
@@ -23,6 +24,8 @@ public sealed class ClientesController : ControllerBase
         return Results.Ok(clientes);
     }
 
+    [EndpointSummary("Get client by Id")]
+    [ProducesResponseType(typeof(ClienteViewModel), StatusCodes.Status200OK)]
     [HttpGet("clientes/{id:guid}", Name = "GetClientById")]
     public async Task<IResult> GetClientByIdAsync([FromRoute] Guid id)
     {
@@ -32,6 +35,8 @@ public sealed class ClientesController : ControllerBase
         return Results.Ok(cliente);
     }
 
+    [EndpointSummary("Create new client")]
+    [ProducesResponseType(typeof(ClienteViewModel), StatusCodes.Status201Created)]
     [HttpPost("clientes", Name = "CreateNewClient")]
     public async Task<IResult> CreateNewClientAsync([FromBody] ClienteInputModel? cliente)
     {
@@ -44,16 +49,19 @@ public sealed class ClientesController : ControllerBase
             new ClienteViewModel(result.Value, cliente.Nome, cliente.Cpf, cliente.DataNascimento));
     }
     
+    [EndpointSummary("Change client name")]
+    [ProducesResponseType(typeof(ClienteViewModel), StatusCodes.Status200OK)]
     [HttpPatch("clientes/{id:guid}", Name = "ChangeClientName")]
     public async Task<IResult> ChangeClientNameAsync([FromRoute] Guid id, [FromBody] string nome)
     {
         var result = await _clienteService.ChangeClientNameAsync(id, nome);
         if (!result) return Results.BadRequest("Nome informado igual ao nome atual.");
         
-        return Results.Ok("Nome alterado com sucesso.");
+        return Results.Ok(await _clienteService.GetByIdAsync(id));
     }
 
-    
+    [EndpointSummary("Delete client by Id")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpDelete("clientes/{id:guid}", Name = "DeleteClient")]
     public async Task<IResult> DeleteAsync([FromRoute] Guid id)
     {
@@ -63,6 +71,8 @@ public sealed class ClientesController : ControllerBase
         return Results.Ok("Dados deletados com sucesso.");
     }
 
+    [EndpointSummary("Get client accounts")]
+    [ProducesResponseType(typeof(IEnumerable<ContaViewModel>), StatusCodes.Status200OK)]
     [HttpGet("clientes/{id:guid}/contas", Name = "GetClientAccounts")]
     public async Task<IResult> GetClientAccountsAsync([FromRoute] Guid id)
     {

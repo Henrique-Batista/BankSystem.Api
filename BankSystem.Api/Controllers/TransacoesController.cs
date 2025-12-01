@@ -15,6 +15,8 @@ public sealed class TransacoesController : ControllerBase
         _transacaoService = transacaoService;
     }
 
+    [EndpointSummary("Get all transactions")]
+    [ProducesResponseType(typeof(IEnumerable<TransacaoViewModel>), StatusCodes.Status200OK)]
     [HttpGet("transacoes", Name = "GetAllTransactions")]
     public async Task<IResult> GetAllTransactionsAsync()
     {
@@ -22,6 +24,8 @@ public sealed class TransacoesController : ControllerBase
         return Results.Ok(transacoes);
     }
     
+    [EndpointSummary("Get transaction by Id")]
+    [ProducesResponseType(typeof(TransacaoViewModel), StatusCodes.Status200OK)]
     [HttpGet("transacoes/{id:guid}", Name = "GetTransactionById")]
     public async Task<IResult> GetTransactionByIdAsync([FromRoute] Guid id)
     {
@@ -29,6 +33,8 @@ public sealed class TransacoesController : ControllerBase
         return Results.Ok(transacao);
     }
 
+    [EndpointSummary("Create new transaction")]
+    [ProducesResponseType(typeof(TransacaoViewModel), StatusCodes.Status201Created)]
     [HttpPost("transacoes", Name = "CreateNewTransaction")]
     public async Task<IResult> CreateNewTransactionAsync([FromBody] TransacaoInputModel? transacaoDto)
     {

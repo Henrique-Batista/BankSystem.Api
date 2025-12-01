@@ -1,6 +1,7 @@
 using BankSystem.Application.DTOs;
 using BankSystem.Application.Repositories;
 using BankSystem.Domain.Models;
+using BankSystem.Domain.ValueObjects;
 
 namespace BankSystem.Application.Services;
 
@@ -40,6 +41,16 @@ public sealed class ContaService : IContaService
             cliente.Id
         ));
     }
+    
+    public async Task<bool> ActivateAccountAsync(Guid contaId, ClienteInputModel contaDto)
+    {
+        var conta = await _contaRepository.GetByIdAsync(contaId);
+        var client = conta.Cliente;
+        ArgumentNullException.ThrowIfNull(conta);
+        
+        await _contaRepository.UpdateAsync(conta);
+        return true;
+    }
 
     public async Task<IEnumerable<TransacaoViewModel>> GetAccountTransactionsAsync(Guid contaId)
     {
@@ -74,6 +85,14 @@ public sealed class ContaService : IContaService
         var contaDestino = await _contaRepository.GetByIdAsync(contaDestinoId);
         
         if (contaOrigem == null || contaDestino == null) throw new InvalidOperationException("Conta de origem ou destino inexistente.");
+        
+        if (contaOrigem.Saldo < valor) throw new InvalidOperationException("Saldo insuficiente.");
+        if (contaOrigem.Id == contaDestino.Id) throw new InvalidOperationException("Conta origem e destino iguais.");
+        if (valor <= 0) throw new ArgumentOutOfRangeException(nameof(valor), "Valor deve ser maior que zero.");
+        
+        if (contaOrigem.StatusDaConta != StatusDaConta.Ativo || contaDestino.StatusDaConta != StatusDaConta.Ativo)
+            throw new InvalidOperationException("Ambas as contas devem estar ativas para realizar a transferencia.");
+        
         // testar se ao a operacao de saque da conta origem ser feita porem dar excecao na operacao de deposito na conta destino ira salvar um estado incorreto na aplicacao
         contaOrigem.Sacar(valor);
         contaDestino.Depositar(valor);
