@@ -9,7 +9,7 @@ public interface IClienteService
     Task<ClienteViewModel?> GetByIdAsync(Guid id);
     Task<Guid?> AddClientAsync(ClienteInputModel clienteDto);
     Task<bool> DeleteAsync(Guid id);
-    ClienteViewModel ClientToDto(Cliente cliente);
     Task<IEnumerable<ContaViewModel>> GetClientAccounts(Guid clienteId);
     Task<bool> ChangeClientNameAsync(Guid id, string nome);
+    ClienteViewModel ClientToDto(Cliente cliente);
 }

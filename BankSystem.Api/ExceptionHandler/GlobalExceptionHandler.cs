@@ -21,7 +21,7 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
     {
         _logger.LogError(
             exception, 
-            "Ocorreu um erro inesperado: {Message}", 
+            "BankSystem.Api: Ocorreu um erro inesperado: {Message}", 
             exception.Message);
         
         var problemDetails = exception switch 
@@ -37,13 +37,18 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             {
                 Status = StatusCodes.Status400BadRequest,
                 Title = "CPF Inválido",
-                Detail = exception.Message,
-                Type = "Custom"
+                Detail = exception.Message
+            },
+            InsufficientBalanceException => new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Saldo Insuficiente",
+                Detail = "Nao ha saldo suficiente na conta de origem da transacao para realizar essa operacao.",
             },
             InvalidOperationException => new ProblemDetails
             {
                 Status = StatusCodes.Status409Conflict,
-                Title = "Conflito na Requisição",
+                Title = "Operacao Invalida",
                 Detail = exception.Message,
                 Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8"
             },
@@ -54,7 +59,6 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
                 Detail = "Ocorreu um erro ao tentar atualizar o banco de dados. Verifiqueos dados enviados para localizar registros duplicados.",
                 Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1"
             },
-
             _ => new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,

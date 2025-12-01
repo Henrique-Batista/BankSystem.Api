@@ -5,6 +5,8 @@ using BankSystem.Application.Services;
 using BankSystem.Domain.Models;
 using BankSystem.Infrastructure.Data;
 using Scalar.AspNetCore;
+using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,9 @@ builder.Services.AddDbContext<BankDbContext>();
 builder.Services.AddSqlServer<BankDbContext>(
     builder.Configuration.GetConnectionString("Default"), 
     options => options.MigrationsAssembly("BankSystem.Api"));
+builder.Services.AddSerilog(loggingBuilder => loggingBuilder
+        .WriteTo.File("logs/log.txt", LogEventLevel.Information).WriteTo.Console());
+
 
 builder.Services.AddScoped<IRepository<Conta>, ContaRepository>();
 builder.Services.AddScoped<IRepository<Transacao>, TransacaoRepository>();
@@ -37,6 +42,9 @@ app.MapControllers();
 
 if (app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<BankDbContext>();
+    DatabaseSeeder.Seed(context);
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
@@ -49,10 +57,3 @@ app.MapGet("api/healthcheck", (BankDbContext context) =>
 }).WithName("HealthCheck");
 
 app.Run();
-
-//TODO: Create business logic for operations
-//TODO: Create unit tests
-//TODO: Create authorization for operations
-//TODO: Add return types in controllers
-//TODO: Add logging where necessary
-//TODO: Add documentation

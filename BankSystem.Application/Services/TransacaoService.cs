@@ -10,15 +10,18 @@ public sealed class TransacaoService : ITransacaoService
 {
     private readonly IRepository<Transacao> _transacaoRepository;
     private readonly IContaService _contaService;
+    private readonly ILogger<TransacaoService> _logger;
 
-    public TransacaoService(IRepository<Transacao> transacaoRepository, IContaService contaService)
+    public TransacaoService(IRepository<Transacao> transacaoRepository, IContaService contaService, ILogger<TransacaoService> logger)
     {
         _transacaoRepository = transacaoRepository;
         _contaService = contaService;
+        _logger = logger;
     }
 
     public async Task<IEnumerable<TransacaoViewModel>> GetAllTransacoesAsync()
     {
+        _logger.LogInformation("BankSystem.Api: Buscando todas as transacoes");
         return await _transacaoRepository.GetAllAsync()
             .ContinueWith(task => task.Result.Select(TransacaoToDto));
     }
@@ -27,7 +30,7 @@ public sealed class TransacaoService : ITransacaoService
     {
         var transacao = await _transacaoRepository.GetByIdAsync(id);
         if (transacao == null) throw new ArgumentNullException(nameof(transacao));
-
+        _logger.LogInformation("BankSystem.Api: Buscando transacao por id: {id}", id);
         return TransacaoToDto(transacao);
     }
     
@@ -47,6 +50,7 @@ public sealed class TransacaoService : ITransacaoService
 
         await _contaService.Transfer(contaOrigem.Id, contaDestino.Id, transacaoDto.Valor);
         
+        _logger.LogInformation("BankSystem.Api: Adicionando nova transacao do tipo {tipo} para contas {contaOrigemId} e {contaDestinoId} com valor {valor}.", transacaoDto.Tipo, transacaoDto.ContaOrigemId, transacaoDto.ContaDestinoId, transacaoDto.Valor);
         return await _transacaoRepository.AddAsync(new Transacao
         (
             transacaoDto.Tipo,
@@ -54,11 +58,6 @@ public sealed class TransacaoService : ITransacaoService
             transacaoDto.ContaOrigemId,
             transacaoDto.ContaDestinoId
         ));
-    }
-
-    public Task<bool> DeleteAsync(Guid id)
-    {
-        return _transacaoRepository.DeleteAsync(id);
     }
 
     public TransacaoViewModel TransacaoToDto(Transacao transacao)
