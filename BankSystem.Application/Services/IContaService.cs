@@ -11,4 +11,5 @@ public interface IContaService
     Task<IEnumerable<TransacaoViewModel>> GetAccountTransactionsAsync(Guid contaId);
     Task<IEnumerable<TransacaoViewModel>> GetAccountTransactionsAsSrcAsync(Guid contaId);
     Task<IEnumerable<TransacaoViewModel>> GetAccountTransactionsAsDstAsync(Guid contaId);
+    Task Transfer(Guid contaOrigemId, Guid contaDestinoId, decimal valor);
 }

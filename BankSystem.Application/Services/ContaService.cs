@@ -68,6 +68,19 @@ public sealed class ContaService : IContaService
         return transacoes.Select(t => new TransacaoViewModel(t));
     }
 
+    public async Task Transfer(Guid contaOrigemId, Guid contaDestinoId, decimal valor)
+    {
+        var contaOrigem = await _contaRepository.GetByIdAsync(contaOrigemId);
+        var contaDestino = await _contaRepository.GetByIdAsync(contaDestinoId);
+        
+        if (contaOrigem == null || contaDestino == null) throw new InvalidOperationException("Conta de origem ou destino inexistente.");
+        // testar se ao a operacao de saque da conta origem ser feita porem dar excecao na operacao de deposito na conta destino ira salvar um estado incorreto na aplicacao
+        contaOrigem.Sacar(valor);
+        contaDestino.Depositar(valor);
+        await _contaRepository.UpdateAsync(contaOrigem);
+        await _contaRepository.UpdateAsync(contaDestino);
+    }
+
     public async Task<bool> DeleteAsync(Guid id)
     {
         return await  _contaRepository.DeleteAsync(id);

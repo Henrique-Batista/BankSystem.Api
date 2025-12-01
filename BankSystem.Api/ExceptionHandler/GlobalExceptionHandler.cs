@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace BankSystem.Api;
+namespace BankSystem.Api.ExceptionHandler;
 
 public sealed class GlobalExceptionHandler : IExceptionHandler
 {

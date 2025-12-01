@@ -8,12 +8,12 @@ namespace BankSystem.Application.Services;
 public sealed class TransacaoService : ITransacaoService
 {
     private readonly IRepository<Transacao> _transacaoRepository;
-    private readonly IRepository<Conta> _contaRepository;
+    private readonly IContaService _contaService;
 
-    public TransacaoService(IRepository<Transacao> transacaoRepository, IRepository<Conta> contaRepository)
+    public TransacaoService(IRepository<Transacao> transacaoRepository, IContaService contaService)
     {
         _transacaoRepository = transacaoRepository;
-        _contaRepository = contaRepository;
+        _contaService = contaService;
     }
 
     public async Task<IEnumerable<TransacaoViewModel>> GetAllTransacoesAsync()
@@ -22,7 +22,7 @@ public sealed class TransacaoService : ITransacaoService
             .ContinueWith(task => task.Result.Select(TransacaoToDto));
     }
 
-    public async Task<TransacaoViewModel> GetByIdAsync(Guid id)
+    public async Task<TransacaoViewModel?> GetByIdAsync(Guid id)
     {
         var transacao = await _transacaoRepository.GetByIdAsync(id);
         if (transacao == null) throw new ArgumentNullException(nameof(transacao));
@@ -32,10 +32,14 @@ public sealed class TransacaoService : ITransacaoService
     
     public async Task<Guid?> AddTransacaoAsync(TransacaoInputModel transacaoDto)
     {
-        var contaOrigem = await _contaRepository.GetByIdAsync(transacaoDto.ContaOrigemId);
-        var contaDestino = await _contaRepository.GetByIdAsync(transacaoDto.ContaDestinoId);
+        var contaOrigem = await _contaService.GetByIdAsync(transacaoDto.ContaOrigemId);
+        var contaDestino = await _contaService.GetByIdAsync(transacaoDto.ContaDestinoId);
         
         if (contaOrigem == null || contaDestino == null) throw new InvalidOperationException("Conta de origem ou destino inexistente.");
+        
+        if (contaOrigem.Saldo < transacaoDto.Valor) throw new InvalidOperationException("Saldo insuficiente.");
+
+        await _contaService.Transfer(contaOrigem.Id, contaDestino.Id, transacaoDto.Valor);
         
         return await _transacaoRepository.AddAsync(new Transacao
         (

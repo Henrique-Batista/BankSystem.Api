@@ -16,7 +16,6 @@ public sealed class ContaRepository : Repository<Conta>, IContaRepository
     
     public override async Task<Conta?> GetByIdAsync(Guid id)
     {
-
         var conta = await _dbContext.Contas
             .Include(c => c.TransacoesComoDestino)
             .Include(c => c.TransacoesComoOrigem)

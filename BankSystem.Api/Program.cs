@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using BankSystem.Api;
+using BankSystem.Api.ExceptionHandler;
 using BankSystem.Application.Repositories;
 using BankSystem.Application.Services;
 using BankSystem.Domain.Models;

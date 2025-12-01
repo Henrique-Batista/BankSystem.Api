@@ -13,7 +13,6 @@ public sealed class TransacaoRepository : Repository<Transacao>, ITransacaoRepos
     public override async Task<Transacao?> GetByIdAsync(Guid id)
     {
         return await _dbContext.Transacoes
-            .AsNoTracking()
             .Include(t => t.ContaOrigem)
             .Include(t => t.ContaDestino)
             .FirstOrDefaultAsync(t => t.Id == id);

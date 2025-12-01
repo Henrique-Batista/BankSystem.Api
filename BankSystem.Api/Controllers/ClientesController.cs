@@ -43,6 +43,15 @@ public sealed class ClientesController : ControllerBase
         return Results.CreatedAtRoute("GetClientById", new { id = result.Value },
             new ClienteViewModel(result.Value, cliente.Nome, cliente.Cpf, cliente.DataNascimento));
     }
+    
+    [HttpPatch("clientes/{id:guid}", Name = "ChangeClientName")]
+    public async Task<IResult> ChangeClientNameAsync([FromRoute] Guid id, [FromBody] string nome)
+    {
+        var result = await _clienteService.ChangeClientNameAsync(id, nome);
+        if (!result) return Results.BadRequest("Nome informado igual ao nome atual.");
+        
+        return Results.Ok("Nome alterado com sucesso.");
+    }
 
     
     [HttpDelete("clientes/{id:guid}", Name = "DeleteClient")]

@@ -13,6 +13,7 @@ public sealed class Transacao : Entity
     public Transacao(TipoDeTransacao tipo, decimal valor, Guid contaOrigemId, Guid contaDestinoId)
     {
         Tipo = tipo;
+        if (valor <= 0) throw new ArgumentOutOfRangeException(nameof(valor), "Valor deve ser maior que zero.");
         Valor = valor;
         Data_Hora = DateTime.Now;
         Conta_Origem_Id = contaOrigemId;

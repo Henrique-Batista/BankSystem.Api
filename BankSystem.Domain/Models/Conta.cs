@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BankSystem.Domain.Exceptions;
 using BankSystem.Domain.ValueObjects;
 
 namespace BankSystem.Domain.Models;
@@ -34,4 +35,18 @@ public sealed class Conta : Entity
     
     [NotMapped]
     public IEnumerable<Transacao> Transacoes => TransacoesComoOrigem.Concat(TransacoesComoDestino);
+    
+    public void Depositar(decimal valor)
+    {
+        if (valor < 0) throw new ArgumentOutOfRangeException(nameof(valor), "Valor deve ser maior que zero.");
+        Saldo += valor;
+    }
+    
+    public void Sacar(decimal valor)
+    {
+        if (valor < 0) throw new ArgumentOutOfRangeException(nameof(valor), "Valor deve ser maior que zero.");
+        if (valor > Saldo)
+            throw new InsufficientBalanceException("Saldo insuficiente para realizar a operação.");
+        Saldo -= valor;
+    }
 }

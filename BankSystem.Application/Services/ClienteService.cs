@@ -26,6 +26,16 @@ public sealed class ClienteService : IClienteService
         return ClientToDto(cliente);
     }
 
+    public async Task<bool> ChangeClientNameAsync(Guid id, string nome)
+    {
+        var cliente = await _clienteRepository.GetByIdAsync(id);
+        ArgumentNullException.ThrowIfNull(cliente);
+        if (cliente.Nome == nome) return false;
+        
+        cliente.Nome = nome;
+        return await _clienteRepository.UpdateAsync(cliente);
+    } 
+
     public async Task<Guid?> AddClientAsync(ClienteInputModel clienteDto)
     {
         ArgumentNullException.ThrowIfNull(clienteDto);

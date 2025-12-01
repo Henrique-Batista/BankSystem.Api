@@ -11,4 +11,5 @@ public interface IClienteService
     Task<bool> DeleteAsync(Guid id);
     ClienteViewModel ClientToDto(Cliente cliente);
     Task<IEnumerable<ContaViewModel>> GetClientAccounts(Guid clienteId);
+    Task<bool> ChangeClientNameAsync(Guid id, string nome);
 }
