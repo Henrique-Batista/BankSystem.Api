@@ -1,5 +1,7 @@
+using BankSystem.Domain.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BankSystem.Api;
 
@@ -17,28 +19,56 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
         Exception exception,
         CancellationToken cancellationToken)
     {
-        // 1. Logar o erro original (com Structured Logging)
         _logger.LogError(
             exception, 
             "Ocorreu um erro inesperado: {Message}", 
             exception.Message);
-
-        // 2. Definir o formato de resposta (RFC 7807 Problem Details)
-        var problemDetails = new ProblemDetails
+        
+        var problemDetails = exception switch 
         {
-            Status = StatusCodes.Status500InternalServerError,
-            Title = "Erro Interno do Servidor",
-            Detail = "Ocorreu um erro no processamento da sua requisição.",
-            Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1"
+            ArgumentNullException => new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Requisição Inválida",
+                Detail = exception.Message,
+                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1"
+            },
+            InvalidCpfException => new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "CPF Inválido",
+                Detail = exception.Message,
+                Type = "Custom"
+            },
+            InvalidOperationException => new ProblemDetails
+            {
+                Status = StatusCodes.Status409Conflict,
+                Title = "Conflito na Requisição",
+                Detail = exception.Message,
+                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8"
+            },
+            DbUpdateException => new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Title = "Erro ao Atualizar o Banco de Dados",
+                Detail = "Ocorreu um erro ao tentar atualizar o banco de dados. Verifiqueos dados enviados para localizar registros duplicados.",
+                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1"
+            },
+
+            _ => new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Erro Interno do Servidor",
+                Detail = "Ocorreu um erro no processamento da sua requisição.",
+                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1"
+            }
         };
 
-        httpContext.Response.StatusCode = problemDetails.Status.Value;
+        httpContext.Response.StatusCode = problemDetails.Status!.Value;
 
-        // 3. Escrever a resposta como JSON
         await httpContext.Response
             .WriteAsJsonAsync(problemDetails, cancellationToken);
 
-        // Retorna true para indicar que o erro foi tratado
         return true; 
     }
 }

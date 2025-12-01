@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using BankSystem.Api;
 using BankSystem.Application.Repositories;
 using BankSystem.Application.Services;
@@ -7,10 +8,13 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 builder.Services.AddOpenApi();
-builder.Services.AddControllers();
 
 builder.Services.AddDbContext<BankDbContext>();
 builder.Services.AddSqlServer<BankDbContext>(
@@ -30,14 +34,12 @@ var app = builder.Build();
 
 app.UseExceptionHandler();
 app.MapControllers();
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
-
 }
-
 
 app.MapGet("api/healthcheck", (BankDbContext context) =>
 {
@@ -51,3 +53,6 @@ app.Run();
 //TODO: Create business logic for operations
 //TODO: Create unit tests
 //TODO: Create authorization for operations
+//TODO: Add return types in controllers
+//TODO: Add logging where necessary
+//TODO: Add documentation

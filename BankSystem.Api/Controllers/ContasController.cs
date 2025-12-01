@@ -4,9 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankSystem.Api.Controllers;
 
-public sealed class ContaController : ControllerBase
+[ApiController]
+[Route("api")]
+public sealed class ContasController : ControllerBase
 {
-    private readonly ContaService _contaService;
+    private readonly IContaService _contaService;
+
+    public ContasController(IContaService contaService)
+    {
+        _contaService = contaService;
+    }
 
     [HttpGet("contas", Name = "GetAllAccounts")]
     public async Task<IResult> GetAllAccountsAsync()
@@ -29,11 +36,25 @@ public sealed class ContaController : ControllerBase
         var transacoes = await _contaService.GetAccountTransactionsAsync(id);
         return Results.Ok(transacoes);
     }
+    
+    [HttpGet("contas/{id:guid}/transacoes/destino", Name = "GetAccountTransactionsAsDestination")]
+    public async Task<IResult> GetAccountTransactionsAsDestinationAsync([FromRoute] Guid id)
+    {
+        var transacoes = await _contaService.GetAccountTransactionsAsDstAsync(id);
+        return Results.Ok(transacoes);
+    }
+    
+    [HttpGet("contas/{id:guid}/transacoes/origem", Name = "GetAccountTransactionsAsSource")]
+    public async Task<IResult> GetAccountTransactionsAsSourceAsync([FromRoute] Guid id)
+    {
+        var transacoes = await _contaService.GetAccountTransactionsAsSrcAsync(id);
+        return Results.Ok(transacoes);
+    }
 
     [HttpPost("contas", Name = "CreateNewAccount")]
     public async Task<IResult> CreateNewAccountAsync([FromBody] ContaInputModel? contaDto)
     {
-        if (ModelState.IsValid || contaDto == null) return Results.BadRequest("Conta invalida.");
+        if (!ModelState.IsValid || contaDto == null) return Results.BadRequest("Conta invalida.");
 
         var result = await _contaService.AddContaAsync(contaDto);
         if (result == null) return Results.BadRequest("Falha ao cadastrar a conta.");

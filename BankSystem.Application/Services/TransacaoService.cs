@@ -53,7 +53,7 @@ public sealed class TransacaoService : ITransacaoService
 
     public TransacaoViewModel TransacaoToDto(Transacao transacao)
     {
-        if (transacao == null) throw new ArgumentNullException(nameof(transacao));
+        ArgumentNullException.ThrowIfNull(transacao);
         return new TransacaoViewModel(transacao);
     }
 }

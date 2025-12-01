@@ -37,6 +37,13 @@ public sealed class BankDbContext : DbContext
             .Property(c => c.Numero)
             .ValueGeneratedOnAdd();
         
+        modelBuilder.Entity<Conta>()
+            .Property(c => c.Tipo)
+            .HasConversion<string>();
+        modelBuilder.Entity<Conta>()
+            .Property(c => c.StatusDaConta)
+            .HasConversion<string>();
+        
         modelBuilder.Entity<Transacao>()
             .Property(t => t.Valor)
             .HasColumnType("decimal(18,2)");
@@ -52,5 +59,9 @@ public sealed class BankDbContext : DbContext
             .WithMany(c => c.TransacoesComoDestino)
             .HasForeignKey(t => t.Conta_Destino_Id)
             .OnDelete(DeleteBehavior.NoAction);
+        
+        modelBuilder.Entity<Transacao>()
+            .Property(t => t.Tipo)
+            .HasConversion<string>();
     }
 }

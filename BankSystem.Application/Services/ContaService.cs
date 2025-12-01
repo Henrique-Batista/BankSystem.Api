@@ -23,7 +23,7 @@ public sealed class ContaService : IContaService
     public async Task<ContaViewModel?> GetByIdAsync(Guid id)
     {
         var conta = await _contaRepository.GetByIdAsync(id);
-        if (conta == null) throw new ArgumentNullException(nameof(conta));
+        ArgumentNullException.ThrowIfNull(conta);
 
         return ContaToDto(conta);
     }
@@ -44,9 +44,27 @@ public sealed class ContaService : IContaService
     public async Task<IEnumerable<TransacaoViewModel>> GetAccountTransactionsAsync(Guid contaId)
     {
         var conta = await _contaRepository.GetByIdAsync(contaId);
-        if (conta == null) throw new ArgumentNullException(nameof(conta));
+        ArgumentNullException.ThrowIfNull(conta);
         
         var transacoes = conta.Transacoes;
+        return transacoes.Select(t => new TransacaoViewModel(t));
+    }
+
+    public async Task<IEnumerable<TransacaoViewModel>> GetAccountTransactionsAsSrcAsync(Guid contaId)
+    {
+        var conta = await _contaRepository.GetByIdAsync(contaId);
+        ArgumentNullException.ThrowIfNull(conta);
+        
+        var transacoes = conta.TransacoesComoOrigem;
+        return transacoes.Select(t => new TransacaoViewModel(t));
+    }
+
+    public async Task<IEnumerable<TransacaoViewModel>> GetAccountTransactionsAsDstAsync(Guid contaId)
+    {
+        var conta = await _contaRepository.GetByIdAsync(contaId);
+        ArgumentNullException.ThrowIfNull(conta);
+        
+        var transacoes = conta.TransacoesComoDestino;
         return transacoes.Select(t => new TransacaoViewModel(t));
     }
 
@@ -57,7 +75,7 @@ public sealed class ContaService : IContaService
 
     private ContaViewModel ContaToDto(Conta conta)
     {
-        if (conta == null) throw new ArgumentNullException("Conta nao encontrada.");
+        ArgumentNullException.ThrowIfNull(conta);
         return new ContaViewModel(conta);
     }
 }

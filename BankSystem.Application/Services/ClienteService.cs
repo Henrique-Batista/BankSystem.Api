@@ -21,15 +21,15 @@ public sealed class ClienteService : IClienteService
     public async Task<ClienteViewModel?> GetByIdAsync(Guid id)
     {
         var cliente = await _clienteRepository.GetByIdAsync(id);
-        if (cliente == null) throw new ArgumentNullException(nameof(cliente));
+        ArgumentNullException.ThrowIfNull(cliente);
         
         return ClientToDto(cliente);
     }
 
     public async Task<Guid?> AddClientAsync(ClienteInputModel clienteDto)
     {
-        if (clienteDto == null) throw new ArgumentNullException(nameof(clienteDto));
-        
+        ArgumentNullException.ThrowIfNull(clienteDto);
+
         return await _clienteRepository.AddAsync(new Cliente
         (
             clienteDto.Nome,
@@ -45,8 +45,8 @@ public sealed class ClienteService : IClienteService
 
     public ClienteViewModel ClientToDto(Cliente cliente)
     {
-        if (cliente == null) throw new ArgumentNullException(nameof(cliente));
-        
+        ArgumentNullException.ThrowIfNull(cliente);
+
         return new ClienteViewModel(cliente);
     }
 

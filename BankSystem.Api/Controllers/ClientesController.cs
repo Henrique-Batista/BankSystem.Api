@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankSystem.Api.Controllers;
 
-public sealed class ClientController : ControllerBase
+[ApiController]
+[Route("api")]
+public sealed class ClientesController : ControllerBase
 {
-    private readonly ClienteService _clienteService;
+    private readonly IClienteService _clienteService;
     
-    public ClientController(ClienteService clienteService)
+    public ClientesController(IClienteService clienteService)
     {
         _clienteService = clienteService;
     }
@@ -18,7 +20,7 @@ public sealed class ClientController : ControllerBase
     public async Task<IResult> GetAllClientsAsync()
     {
         var clientes = await _clienteService.GetAllClientsAsync();
-        return Results.Ok((object?)clientes);
+        return Results.Ok(clientes);
     }
 
     [HttpGet("clientes/{id:guid}", Name = "GetClientById")]
@@ -27,16 +29,14 @@ public sealed class ClientController : ControllerBase
         var cliente = await _clienteService.GetByIdAsync(id);
         if (cliente == null) return Results.NotFound("Nao foi possivel encontrar o cliente com o Id informado.");
         
-        return Results.Ok((object?)cliente);
+        return Results.Ok(cliente);
     }
 
     [HttpPost("clientes", Name = "CreateNewClient")]
     public async Task<IResult> CreateNewClientAsync([FromBody] ClienteInputModel? cliente)
     {
-        if (ModelState.IsValid) return Results.BadRequest("Cliente invalido.");
-        
-        if (cliente == null) return Results.BadRequest("Cliente invalido.");
-        
+        if (!ModelState.IsValid || cliente == null) return Results.BadRequest("Cliente invalido.");
+
         var result = await _clienteService.AddClientAsync(cliente);
         if (result == null) return Results.BadRequest("Falha ao cadastrar o cliente.");
         
@@ -44,6 +44,7 @@ public sealed class ClientController : ControllerBase
             new ClienteViewModel(result.Value, cliente.Nome, cliente.Cpf, cliente.DataNascimento));
     }
 
+    
     [HttpDelete("clientes/{id:guid}", Name = "DeleteClient")]
     public async Task<IResult> DeleteAsync([FromRoute] Guid id)
     {
@@ -57,6 +58,6 @@ public sealed class ClientController : ControllerBase
     public async Task<IResult> GetClientAccountsAsync([FromRoute] Guid id)
     {
         var contas = await _clienteService.GetClientAccounts(id);
-        return Results.Ok((object?)contas);
+        return Results.Ok(contas);
     }
 }

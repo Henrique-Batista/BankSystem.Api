@@ -1,3 +1,5 @@
+using BankSystem.Domain.Exceptions;
+
 namespace BankSystem.Domain.Models;
 
 public sealed class Cliente : Entity
@@ -24,7 +26,8 @@ public sealed class Cliente : Entity
         {
             var valores = value.Split(".");
             
-            if (string.IsNullOrEmpty(value) || value.Length != 14 || valores.Length != 3) throw new InvalidOperationException("CPF invalido!");
+            if (string.IsNullOrEmpty(value) || value.Length != 14 || valores.Length != 3) 
+                throw new InvalidCpfException("CPF invalido!");
         
             _cpf = value;
         }
