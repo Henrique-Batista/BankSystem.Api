@@ -45,9 +45,9 @@ if (app.Environment.IsDevelopment())
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<BankDbContext>();
     DatabaseSeeder.Seed(context);
-    app.MapOpenApi();
-    app.MapScalarApiReference();
 }
+app.MapOpenApi();
+app.MapScalarApiReference();
 
 app.MapGet("api/healthcheck", (BankDbContext context) =>
 {
