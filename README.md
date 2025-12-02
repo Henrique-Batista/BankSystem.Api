@@ -1,3 +1,6 @@
+<img width="800" height="800" alt="SP-Studio" src="https://github.com/user-attachments/assets/1526f844-3e95-4b55-b113-21d102059ec7" />
+
+
 # BankSystem.Api
 
 Sistema bancário desenvolvido em .NET 9 com Entity Framework Core, seguindo princípios de Clean Architecture e Domain-Driven Design (DDD).
