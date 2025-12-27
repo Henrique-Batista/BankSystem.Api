@@ -17,9 +17,11 @@
         <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.1-dev-02319" />
         <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
         <PackageReference Include="Serilog.Sinks.File" Version="7.0.1-dev-02315" />
+        <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\BankSystem.Api.ServiceDefaults\BankSystem.Api.ServiceDefaults.csproj" />
       <ProjectReference Include="..\BankSystem.Application\BankSystem.Application.csproj" />
       <ProjectReference Include="..\BankSystem.Infrastructure\BankSystem.Infrastructure.csproj" />
     </ItemGroup>

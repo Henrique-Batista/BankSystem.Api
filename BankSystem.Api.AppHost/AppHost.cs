@@ -1,6 +1,3 @@
-using Google.Protobuf.WellKnownTypes;
-using Microsoft.Extensions.DependencyInjection;
-
 var builder = DistributedApplication.CreateBuilder(args);
 var postgres = builder.AddPostgres("postgres")
                       .WithPgAdmin();
@@ -11,4 +8,8 @@ var bankSystemAPI = builder.AddProject<Projects.BankSystem_Api>("BankSystem-Api"
                             .WithReference(postgresdb)
                             .WithUrlForEndpoint("https", a => a.Url = "/scalar");
 
+
 builder.Build().Run();
+
+//TODO: Revisar Testes
+//TODO: Adicionar autenticacao e autorizacao
