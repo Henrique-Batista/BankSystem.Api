@@ -59,7 +59,7 @@ cd BankSystem.Api
 aspire run
 ```
 
-A API estará disponível em `https://localhost:5001` (ou `http://localhost:5000`)
+A API estará disponível por meio do  acesso ao dashboard do Aspire
 
 ## 📊 Dados de Exemplo (Seed)
 
@@ -74,7 +74,7 @@ Em ambiente de desenvolvimento, o banco de dados é automaticamente populado com
 
 A documentação interativa da API está disponível através do Scalar:
 
-`https://localhost:5001/scalar/`
+`https://localhost:<porta no dashboard do Aspire>/scalar/`
 
 ### Endpoints Principais
 
@@ -129,7 +129,7 @@ dotnet test
 ### Criar um Cliente
 
 ```bash
-curl -X POST https://localhost:5001/api/clientes \
+curl -X POST https://localhost:<porta>/api/clientes \
   -H "Content-Type: application/json" \
   -d '{
     "nome": "João Silva",
@@ -141,7 +141,7 @@ curl -X POST https://localhost:5001/api/clientes \
 ### Criar uma Conta
 
 ```bash
-curl -X POST https://localhost:5001/api/contas \
+curl -X POST https://localhost:<porta>/api/contas \
   -H "Content-Type: application/json" \
   -d '{
     "tipo": "Corrente",
