@@ -40,8 +40,9 @@ BankSystem.Infrastructure/  # DbContext e Data Seeding
 ## 📋 Pré-requisitos
 
 - [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
-- [SQL Server](https://www.microsoft.com/sql-server) (ou Docker com SQL Server)
+- [Docker](https://www.docker.com/)
 - [Entity Framework Core Tools](https://learn.microsoft.com/ef/core/cli/dotnet)
+- [Aspire Cli](https://aspire.dev/get-started/install-cli/)
 
 ## 🔧 Configuração
 
@@ -49,31 +50,13 @@ BankSystem.Infrastructure/  # DbContext e Data Seeding
 
 ```bash
 git clone <url-do-repositorio>
-cd Bank.Api
+cd BankSystem.Api
 ```
 
-### 2. Configure a string de conexão
-
-Edite o arquivo `BankSystem.Api/appsettings.json`:
-
-```json
-{
-  "ConnectionStrings": {
-    "Default": "Server=127.0.0.1,1433;Database=BankSystem;User Id=sa;Password=SuaSenha;TrustServerCertificate=True;"
-  }
-}
-```
-
-### 3. Execute as migrações
+### 2. Rode o Aspire
 
 ```bash
-dotnet ef database update --project BankSystem.Api
-```
-
-### 4. Execute a aplicação
-
-```bash
-dotnet run --project BankSystem.Api
+aspire run
 ```
 
 A API estará disponível em `https://localhost:5001` (ou `http://localhost:5000`)
@@ -133,11 +116,13 @@ dotnet test
 ## 🛠️ Tecnologias Utilizadas
 
 - **.NET 9**
-- **Entity Framework Core 9**
-- **SQL Server**
+- **Entity Framework Core 9** - ORM para acesso ao banco de dados
+- **PostgreSQL** - Banco de dados
+- **Docker** - Criacao e deploy do ambiente de desenvolvimento e producao
 - **Bogus** - Geração de dados fictícios
 - **Scalar** - Documentação interativa da API
 - **xUnit** - Framework de testes
+- **Aspire** - Orquestracao e configuracao de servicos
 
 ## 📝 Exemplos de Uso
 
