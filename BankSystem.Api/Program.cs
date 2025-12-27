@@ -4,6 +4,7 @@ using BankSystem.Application.Repositories;
 using BankSystem.Application.Services;
 using BankSystem.Domain.Models;
 using BankSystem.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Events;
@@ -18,10 +19,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<BankDbContext>();
-builder.Services.AddSqlServer<BankDbContext>(
-    builder.Configuration.GetConnectionString("Default"), 
-    options => options.MigrationsAssembly("BankSystem.Api"));
+builder.AddNpgsqlDbContext<BankDbContext>("postgresdb");
 builder.Services.AddSerilog(loggingBuilder => loggingBuilder
         .WriteTo.File("logs/log.txt", LogEventLevel.Information).WriteTo.Console());
 
@@ -35,6 +33,8 @@ builder.Services.AddScoped<IContaService, ContaService>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
+
+
 var app = builder.Build();
 
 app.UseExceptionHandler();
@@ -44,6 +44,7 @@ if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<BankDbContext>();
+    context.Database.Migrate();
     DatabaseSeeder.Seed(context);
 }
 app.MapOpenApi();

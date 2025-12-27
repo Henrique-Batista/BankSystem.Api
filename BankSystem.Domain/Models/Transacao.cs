@@ -20,7 +20,7 @@ public sealed class Transacao : Entity
         Tipo = tipo;
         if (valor <= 0) throw new ArgumentOutOfRangeException(nameof(valor), "Valor deve ser maior que zero.");
         Valor = valor;
-        Data_Hora = DateTime.Now;
+        Data_Hora = DateTime.UtcNow;
         Conta_Origem_Id = contaOrigemId;
         Conta_Destino_Id = contaDestinoId;
     }
