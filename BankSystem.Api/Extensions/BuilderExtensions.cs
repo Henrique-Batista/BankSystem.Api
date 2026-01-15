@@ -3,8 +3,6 @@ using BankSystem.Api.ExceptionHandler;
 using BankSystem.Application.Repositories;
 using BankSystem.Application.Services;
 using BankSystem.Domain.Models;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Events;
 
@@ -42,5 +40,11 @@ public static class BuilderExtensions
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
+        services.ConfigureHttpJsonOptions(options =>
+        {
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
+
+        services.AddEndpointsApiExplorer();
     }
 }
